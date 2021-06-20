@@ -6,7 +6,7 @@
   "dbPort": 5432,
   "dbUser": "postgres",
   "dbPassword": "Qwerty123",
-  "dbName": "adv",
+  "dbName": "linkshortener",
 
   "alphabet": "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
   "len_shorten_link": 10

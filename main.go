@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"google.golang.org/grpc"
@@ -13,6 +14,9 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 var ConfigPath = "config.json"
@@ -43,7 +47,7 @@ func main() {
 	}
 	configFile.Close()
 	dsn := fmt.Sprintf(
-		"host=%S user=%s password=%s dbname=%s port=%d sslmode=disable",
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 		config.DBHost,
 		config.DBUser,
 		config.DBPassword,
@@ -80,9 +84,24 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	grpcServer := grpc.NewServer()
+	proto_linkShortener.RegisterLinkShortenerServer(grpcServer, server)
 
-	grpsServer := grpc.NewServer()
-	proto_linkShortener.RegisterLinkShortenerServer(grpsServer, server)
-	grpsServer.Serve(lis)
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		log.Printf("INFO: TCP server has started at %s\n", addr)
+		err = grpcServer.Serve(lis)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	<-quit
+	log.Println("Interrupt signal received. Shutting down server...")
+	_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	grpcServer.GracefulStop()
 }
 
