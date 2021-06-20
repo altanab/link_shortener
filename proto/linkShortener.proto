@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto_linkShortener;
+
+option go_package = "./;proto_linkShortener";
+
+message OriginalLink {
+    string originalLink = 1;
+}
+
+message ShortenLink {
+    string shortenLink = 1;
+}
+
+service linkShortener {
+    rpc Create(OriginalLink) returns (ShortenLink) {}
+    rpc Get(ShortenLink) returns (OriginalLink) {}
+}
