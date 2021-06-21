@@ -33,7 +33,7 @@ var config = struct {
 }{
 	"127.0.0.1",
 	9080,
-	"127.0.0.1",
+	"postgres",
 	5432,
 	"postgres",
 	"Qwerty123",

@@ -6,4 +6,10 @@ RUN go mod tidy
 RUN go build -o main main.go
 
 EXPOSE 9080
-CMD /app/maingit
+
+# Add docker-compose-wait tool -------------------
+ENV WAIT_VERSION 2.7.2
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
+RUN chmod +x /wait
+
+CMD /app/main
