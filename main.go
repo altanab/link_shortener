@@ -31,7 +31,7 @@ var config = struct {
 	Alphabet []byte
 	LenShortenLink int
 }{
-	"127.0.0.1",
+	"go-server",
 	9080,
 	"postgres",
 	5432,
