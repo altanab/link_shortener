@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/golang/mock v1.6.0 // indirect
+	github.com/golang/mock v1.6.0
 	github.com/jackc/pgconn v1.8.1
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
