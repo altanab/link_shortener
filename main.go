@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
@@ -19,33 +18,30 @@ import (
 	"time"
 )
 
-var ConfigPath = "config.json"
+var config = struct {
+	Host string
+	Port int
 
-type Config struct {
-	Host string `json:"host"`
-	Port int `json:"port"`
+	DBHost string
+	DBPort int
+	DBUser string
+	DBPassword string
+	DBName string
 
-	DBHost string `json:"dbHost"`
-	DBUser string `json:"dbUser"`
-	DBPassword string `json:"dbPassword"`
-	DBName string `json:"dbName"`
-	DBPort int `json:"dbPort"`
-
-	Alphabet string `json:"alphabet"`
-	LenShortenLink int `json:"len_shorten_link"`
+	Alphabet []byte
+	LenShortenLink int
+}{
+	"127.0.0.1",
+	9080,
+	"127.0.0.1",
+	5432,
+	"postgres",
+	"Qwerty123",
+	"linkshortener",
+	[]byte("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+	10,
 }
 func main() {
-	var config Config
-	configFile, err := os.Open(ConfigPath)
-	if err != nil {
-		log.Fatalf("cannot open config file: %s", err.Error())
-	}
-
-	err = json.NewDecoder(configFile).Decode(&config)
-	if err != nil {
-		log.Fatalf("cannot unmarshal config file: %s", err.Error())
-	}
-	configFile.Close()
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 		config.DBHost,
@@ -73,7 +69,7 @@ func main() {
 			&repository.ShortLinkRep{
 				db,
 			},
-			[]byte(config.Alphabet),
+			config.Alphabet,
 			config.LenShortenLink,
 		},
 	}
